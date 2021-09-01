@@ -8,10 +8,8 @@
   },
   "dependencies": {
     "@malven/gui": "^1.4.1",
-    "gsap": "^3.6.0",
     "nice-color-palettes": "^3.0.0",
     "reset.css": "^2.0.2",
-    "sass-mq": "^5.0.1",
     "simplex-noise": "^3.0.0",
     "stats.js": "^0.17.0"
   },
