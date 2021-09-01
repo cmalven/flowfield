@@ -29,11 +29,13 @@ class Flowfield {
     gridResolution: 0.015,
     noiseScale: 0.007,
     noiseIteration: 1,
-    strokeCount: 5000,
+    strokeCount: 8000,
     maxStrokeLength: 0.9,
     minStrokeThickness: 0.1,
     maxStrokeThickness: 0.5,
     strokeSegmentLength: 10,
+    background: '#212322',
+    blackAndWhite: false,
     drawGrid: false,
   };
 
@@ -74,17 +76,20 @@ class Flowfield {
     window.APP.gui.add(this.settings, 'gridResolution', 0.01, 0.1);
     window.APP.gui.add(this.settings, 'noiseScale', 0.0001, 0.02);
     window.APP.gui.add(this.settings, 'noiseIteration', 0.1, 5);
-    window.APP.gui.add(this.settings, 'strokeCount', 100, 8000);
+    window.APP.gui.add(this.settings, 'strokeCount', 100, 20000);
     window.APP.gui.add(this.settings, 'maxStrokeLength', 0.001, 1);
     window.APP.gui.add(this.settings, 'strokeSegmentLength', 0.5, 100);
     window.APP.gui.add(this.settings, 'minStrokeThickness', 0.02, 3);
     window.APP.gui.add(this.settings, 'maxStrokeThickness', 0.02, 3);
+    window.APP.gui.addColor(this.settings, 'background');
+    window.APP.gui.add(this.settings, 'blackAndWhite');
     window.APP.gui.add(this.settings, 'drawGrid');
 
     // Restart on change
     const controllers = window.APP.gui.getControllers();
     controllers.forEach(controller => {
       controller.onChange(() => {
+        document.documentElement.style.setProperty('--background-color', this.settings.background);
         this.clear();
         this.resize();
         this.setup();
@@ -161,9 +166,9 @@ class Flowfield {
   };
 
   drawStrokes = () => {
-    const strokesPerDraw = 200;
-
     if (this.linesDrawnCount >= this.settings.strokeCount) return;
+
+    const strokesPerDraw = 300;
 
     for (var strokeIdx = 0; strokeIdx < strokesPerDraw; strokeIdx++) {
       // Draw
@@ -172,7 +177,9 @@ class Flowfield {
         y: Math.random() * this.canvas.height,
       };
 
-      this.ctx.strokeStyle = this.palette[Math.floor(Math.random() * this.palette.length)];
+      this.ctx.strokeStyle = this.settings.blackAndWhite
+        ? `rgba(255, 255, 255, 1)`
+        : this.palette[Math.floor(Math.random() * this.palette.length)];
       this.ctx.lineWidth = Math.random() * (this.settings.maxStrokeThickness - this.settings.minStrokeThickness) + this.settings.minStrokeThickness;
       this.ctx.beginPath();
       this.ctx.moveTo(position.x, position.y);
